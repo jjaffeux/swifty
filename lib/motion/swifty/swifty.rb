@@ -26,7 +26,7 @@ module MotionSwifty
       frameworks = File.join(self.config.app_bundle(platform), "Frameworks")
       update_swift_dlybs("./Cartfile", frameworks) do
         clean_swift_dlybs(frameworks)
-        copy_swift_dlybs(platform)
+        copy_swift_dlybs(platform, frameworks)
       end
 
       self.config.embedded_frameworks += self.carts.map(&:path)
@@ -81,20 +81,12 @@ module MotionSwifty
       target.close
     end
 
-    def copy_swift_dlybs(platform)
-      dlybs = list_swift_dlybs(platform)
-      frameworks_path = File.join(File.dirname(self.config.app_bundle_executable(platform)), "Frameworks")
-      FileUtils.mkdir_p(frameworks_path)
-      dlybs.each do |dlyb|
-        FileUtils.cp(dlyb, frameworks_path)
-      end
-    end
-
-    def list_swift_dlybs(platform)
+    def copy_swift_dlybs(platform, frameworks_path)
       swift_stdlib_tool = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-stdlib-tool"
       archs = self.config.archs[platform].join(' ')
-      bundle = Shellwords.escape("./vendor/Carts/#{archs}")
-      `#{swift_stdlib_tool} --print --scan-folder #{bundle} --platform #{platform.downcase}`.split
+      folder = Shellwords.escape("./vendor/Carts/#{archs}")
+      frameworks_path = Shellwords.escape(frameworks_path)
+      `#{swift_stdlib_tool} --copy --scan-folder #{folder} --platform #{platform.downcase} --destination #{frameworks_path}`
     end
   end
 end
