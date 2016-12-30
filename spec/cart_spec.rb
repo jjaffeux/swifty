@@ -7,6 +7,9 @@ describe 'MotionSwifty::Cart' do
 
     @subject = MotionSwifty::Cart.new('github "nickoneill/PermissionScope" "master"')
     @subject.name.should == "PermissionScope"
+
+    @subject = MotionSwifty::Cart.new('cart "file:///directory/to/project" "branch"', name: "MyFramework")
+    @subject.name.should == "MyFramework"
   end
 
   it '#path' do
