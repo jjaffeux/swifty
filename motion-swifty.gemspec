@@ -3,7 +3,7 @@ module ::Motion; module Project; class Config
   def self.variable(*); end
 end; end; end
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 Gem::Specification.new do |spec|
   spec.name          = "motion-swifty"
